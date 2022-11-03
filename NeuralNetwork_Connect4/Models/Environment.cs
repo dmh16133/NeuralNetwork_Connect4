@@ -12,8 +12,6 @@ namespace NeuralNetwork_Connect4.Models
                  true;
                  generation++)
             {
-                await Task.Delay(1000);
-
                 var evolutionProgress = new EvolutionProgress(generation);
                 if (evolutionProgress.IsEndConditionReached)
                 {
