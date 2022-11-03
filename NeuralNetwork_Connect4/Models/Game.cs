@@ -1,10 +1,12 @@
 namespace NeuralNetwork_Connect4.Models
 {
-    public static class Game
+    public class Game
     {
-        public static void PlayGame(Candidate redPlayer,
-                                    Candidate bluePlayer)
+        public Game(Candidate redPlayer,
+                    Candidate bluePlayer)
         {
         }
+        
+        public GameBoard GameBoard { get; }
     }
 }

@@ -14,7 +14,7 @@ namespace NeuralNetwork_Connect4.Models
                  true;
                  generation++)
             {
-                candidates = Hatchery.RepopulateMissingCandidates(candidates);
+                candidates = Hatchery.GetGenerationCandidateList(candidates);
                 
                 foreach (var iRedCandidate in candidates)
                 {
@@ -24,13 +24,22 @@ namespace NeuralNetwork_Connect4.Models
                                       iBlueCandidate);
                     }
                 }
-                
+
                 if (generation > 5)
                 {
                     yield break;
                 }
 
-                yield return new EvolutionProgress(generation);;
+                var topTwoCandidates = candidates.OrderBy(x => x.Score)
+                                                 .Take(2);
+                
+
+                yield return new EvolutionProgress(generation,
+                                                   new Game(topTwoCandidates[0],
+                                                            topTwoCandidates[1]).GameBoard,
+                                                   new Game(topTwoCandidates[1],
+                                                            topTwoCandidates[0]).GameBoard);
+                    );
             }
         }
     }
