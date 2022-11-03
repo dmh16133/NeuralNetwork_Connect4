@@ -1,24 +1,36 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Windows.Documents;
 
 namespace NeuralNetwork_Connect4.Models
 {
     public static class Environment
     {
-
         public static async IAsyncEnumerable<EvolutionProgress> GetEvolutionProgressAsync()
         {
+            List<Candidate> candidates = new List<Candidate>(); 
+                
             for (uint generation = 0;
                  true;
                  generation++)
             {
-                var evolutionProgress = new EvolutionProgress(generation);
-                if (evolutionProgress.IsEndConditionReached)
+                candidates = Hatchery.RepopulateMissingCandidates(candidates);
+                
+                foreach (var iRedCandidate in candidates)
+                {
+                    foreach (var iBlueCandidate in candidates.Where(x=> x != iRedCandidate))
+                    {
+                        Game.PlayGame(iRedCandidate,
+                                      iBlueCandidate);
+                    }
+                }
+                
+                if (generation > 5)
                 {
                     yield break;
                 }
 
-                yield return evolutionProgress;
+                yield return new EvolutionProgress(generation);;
             }
         }
     }
