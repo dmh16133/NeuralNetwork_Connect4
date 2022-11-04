@@ -14,6 +14,8 @@ namespace NeuralNetwork_Connect4.Models
                                  GameBoard bestPlayersGameTwo)
         {
             Generation = generation;
+            BestPlayersGameOne = bestPlayersGameOne;
+            BestPlayersGameTwo = bestPlayersGameTwo;
         }
     }
 
