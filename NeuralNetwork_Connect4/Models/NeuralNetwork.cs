@@ -5,6 +5,8 @@ namespace NeuralNetwork_Connect4.Models
 {
     public class NeuralNetwork
     {
+        private Random _randomNumberGenerator;
+        
         private const int NumberOfGameInputNodes = 42;
         private const int NumberOfPlayerModeNodes = 1;
 
@@ -13,26 +15,25 @@ namespace NeuralNetwork_Connect4.Models
         
         private const int NumberOfOutputNodes = 7;
 
-        private List<Node> _inputNodes;
+        public List<Node> InputNodes { get; }
         private List<Weight> _inputWeights;
         private List<Node> _internalNodes;
         private List<Weight> _outputWeights;
-        private List<Node> _outputNodes;
+        public  List<Node> OutputNodes { get; }
         
-        private readonly Random _random = new Random(); 
-        
-        public NeuralNetwork()
+        public NeuralNetwork(Random randomNumberGenerator)
         {
-            _inputNodes = new List<Node>();
+            _randomNumberGenerator = randomNumberGenerator;
+            InputNodes = new List<Node>();
             _inputWeights = new List<Weight>();
             _internalNodes = new List<Node>();
             _outputWeights = new List<Weight>();
-            _outputNodes = new List<Node>();
+            OutputNodes = new List<Node>();
             
             CreateInputNodes();
 
-            int numberOfInternalNodes = _random.Next(NumberOfOutputNodes, 
-                                                      NumberOfGameInputNodes);
+            int numberOfInternalNodes = _randomNumberGenerator.Next(NumberOfOutputNodes, 
+                                                                    NumberOfGameInputNodes);
 
             CreateInputWeights(numberOfInternalNodes);
             CreateInternalNodes(numberOfInternalNodes);
@@ -48,7 +49,7 @@ namespace NeuralNetwork_Connect4.Models
                      iInputNode < TotalNumberOfInputNodes;
                      iInputNode++)
             {
-                _inputNodes.Add(new Node(iInputNode, 0));
+                InputNodes.Add(new Node(iInputNode, 0));
             }
         }
 
@@ -64,7 +65,7 @@ namespace NeuralNetwork_Connect4.Models
                 {
                     _inputWeights.Add(new Weight(iInputNodeIndex, 
                                                  iInternalNode, 
-                                                 _random.NextDouble()));
+                                                 _randomNumberGenerator.NextDouble()));
                 }
             }
         }
@@ -76,7 +77,7 @@ namespace NeuralNetwork_Connect4.Models
                      iInternalNodeIndex++)
             {
                 _internalNodes.Add(new Node(iInternalNodeIndex, 
-                                            _random.NextDouble()));
+                                            _randomNumberGenerator.NextDouble()));
             }
         }
 
@@ -92,7 +93,7 @@ namespace NeuralNetwork_Connect4.Models
                 {
                     _outputWeights.Add(new Weight(iInternalNodeIndex, 
                                                   iOutputNode, 
-                                                  _random.NextDouble()));
+                                                  _randomNumberGenerator.NextDouble()));
                 }
             }
         }
@@ -103,23 +104,23 @@ namespace NeuralNetwork_Connect4.Models
                      iOutputNodeIndex < NumberOfOutputNodes; 
                      iOutputNodeIndex++)
             {
-                _outputNodes.Add(new Node(iOutputNodeIndex, 
-                                          _random.NextDouble()));
+                OutputNodes.Add(new Node(iOutputNodeIndex, 
+                                         _randomNumberGenerator.NextDouble()));
             }
         }
 
-        private void Recalculate()
+        public void Recalculate()
         {
             foreach (var iInputWeight in _inputWeights)
             {
                 _internalNodes[iInputWeight.EndNodeIndex]
-                    .AddWeightedValue(_inputNodes[iInputWeight.StartNodeIndex].ActivationValue
+                    .AddWeightedValue(InputNodes[iInputWeight.StartNodeIndex].ActivationValue
                                       * iInputWeight.WeightValue);
             }
 
             foreach (var iOutputWeight in _outputWeights)
             {
-                _outputNodes[iOutputWeight.EndNodeIndex]
+                OutputNodes[iOutputWeight.EndNodeIndex]
                     .AddWeightedValue(_internalNodes[iOutputWeight.StartNodeIndex].ActivationValue
                                       *iOutputWeight.WeightValue);
             }

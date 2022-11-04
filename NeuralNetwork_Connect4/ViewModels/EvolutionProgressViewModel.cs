@@ -11,5 +11,7 @@ namespace NeuralNetwork_Connect4.ViewModels
         }
 
         public uint Generation => _evolutionProgress.Generation;
+        public Candidate GoldPlayer => _evolutionProgress.GoldPlayer;
+        public Candidate SilverPlayer => _evolutionProgress.SilverPlayer;
     }
 }

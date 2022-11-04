@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 
 namespace NeuralNetwork_Connect4.Models
 {
     public static class Environment
     {
-        public static async IAsyncEnumerable<EvolutionProgress> GetEvolutionProgressAsync()
+        public static IEnumerable<EvolutionProgress> GetEvolutionProgress(Random randomNumberGenerator)
         {
-            List<Candidate> candidates = new List<Candidate>(); 
+            List<Candidate> candidates = new List<Candidate>();
+            var hatchery = new Hatchery(randomNumberGenerator);
                 
             for (uint generation = 0;
                  true;
                  generation++)
             {
-                candidates = Hatchery.GetGenerationCandidateList(candidates);
+                candidates = hatchery.GetGenerationCandidateList(candidates);
                 
                 foreach (var iRedCandidate in candidates)
                 {
                     foreach (var iBlueCandidate in candidates.Where(x=> x != iRedCandidate))
                     {
-                        Game.PlayGame(iRedCandidate,
-                                      iBlueCandidate);
+                        var game = new Game(iRedCandidate,
+                                     iBlueCandidate);
                     }
                 }
 
@@ -31,15 +34,16 @@ namespace NeuralNetwork_Connect4.Models
                 }
 
                 var topTwoCandidates = candidates.OrderBy(x => x.Score)
-                                                 .Take(2);
-                
+                                                 .TakeLast(2)
+                                                 .ToList();
 
                 yield return new EvolutionProgress(generation,
+                                                   topTwoCandidates[0],
+                                                   topTwoCandidates[1],
                                                    new Game(topTwoCandidates[0],
                                                             topTwoCandidates[1]).GameBoard,
                                                    new Game(topTwoCandidates[1],
                                                             topTwoCandidates[0]).GameBoard);
-                    );
             }
         }
     }

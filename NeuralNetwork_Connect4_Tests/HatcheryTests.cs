@@ -10,7 +10,8 @@ namespace NeuralNetwork_Connect4_Tests
         [TestMethod]
         public void GivenInitialCandidateListIsEmpty_WhenRepopulateMissingCandidates_ThenReturnsListOf100Candidates()
         {
-            var list = Hatchery.GetGenerationCandidateList(new List<Candidate>());
+            var hatchery = new Hatchery();
+            var list = hatchery.GetGenerationCandidateList(new List<Candidate>());
             Assert.AreEqual(100, list.Count);
         }
         
