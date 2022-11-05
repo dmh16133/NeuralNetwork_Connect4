@@ -5,19 +5,27 @@ namespace NeuralNetwork_Connect4.Models
 {
     public class Candidate
     {
-        private NeuralNetwork _neuralNetwork;
+        public NeuralNetwork NeuralNetwork { get; }
         
         public Candidate(int name, Random randomNumberGenerator)
         {
             Name = name;
-            _neuralNetwork = new NeuralNetwork(randomNumberGenerator);
+            NeuralNetwork = new NeuralNetwork(randomNumberGenerator);
             Score = 0;
         }
 
         public Candidate(Candidate other)
         {
             Name = other.Name;
-            _neuralNetwork = other._neuralNetwork;
+            NeuralNetwork = other.NeuralNetwork;
+            Score = 0;
+        }
+
+        public Candidate(int name,
+                         Candidate other)
+        {
+            Name = name;
+            NeuralNetwork = other.NeuralNetwork;
             Score = 0;
         }
 
@@ -36,29 +44,29 @@ namespace NeuralNetwork_Connect4.Models
                                            iColumn])
                     {
                         case TokenType.Black:
-                            _neuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
+                            NeuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
                                 .AddWeightedValue(1);
                             break;
                         
                         case TokenType.Empty:
-                            _neuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
+                            NeuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
                                 .AddWeightedValue(0);
                             break;
                             
                         case TokenType.Red:
-                            _neuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
+                            NeuralNetwork.InputNodes[iRow * GameBoard.NumberOfColumns + iColumn]
                                 .AddWeightedValue(-1);
                             break;
                     }
                 }
             }
             
-            _neuralNetwork.Recalculate();
-            var mostActivatedNode = _neuralNetwork.OutputNodes
+            NeuralNetwork.Recalculate();
+            var mostActivatedNode = NeuralNetwork.OutputNodes
                 .OrderBy(x => x.ActivationValue)
                 .Last();
                 
-            return _neuralNetwork.OutputNodes.IndexOf(mostActivatedNode);
+            return NeuralNetwork.OutputNodes.IndexOf(mostActivatedNode);
         }
 
         public int Name { get; }

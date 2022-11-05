@@ -9,15 +9,15 @@ namespace NeuralNetwork_Connect4.Models
         private Random _randomNumberGenerator;
         private int _maxCandidateId = 0;
         
-        private const int NumberOfCandidatesFromLastGeneration = 2;
-        private const int MinimumNumberOfCandidates = 4;
+        private const int NumberOfCandidatesFromLastGeneration = 50;
+        private const int MinimumNumberOfCandidates = 100;
 
-        // private const int MutateInputWeightCutoff = 20;
-        // private const int MutateInternalBiasCutoff = 40;
-        // private const int MutateOutputWeightCutoff = 60;
-        // private const int MutateOutputBiasCutoff = 80;
-        // private const int MutateAddInternalNodeCutoff = 90;
-        // private const int MutateDeleteInternalNodeCutoff = 100;
+        private const int MutateInputWeightCutoff = 20;
+        private const int MutateInternalBiasCutoff = 40;
+        private const int MutateOutputWeightCutoff = 60;
+        private const int MutateOutputBiasCutoff = 80;
+        private const int MutateAddInternalNodeCutoff = 90;
+        private const int MutateDeleteInternalNodeCutoff = 100;
 
         public Hatchery(Random randomNumberGenerator)
         {
@@ -50,39 +50,60 @@ namespace NeuralNetwork_Connect4.Models
         {
             var returnList = new List<Candidate>();
 
-            // foreach (var iCandidate in initialCandidateList)
-            // {
-            //     var mutationStrategy = _randomNumberGenerator.Next(0,
-            //                                                        100);
-            //
-            //     switch (mutationStrategy)
-            //     {
-            //         case < MutateInputWeightCutoff:
-            //             break;
-            //         
-            //         case < MutateInternalBiasCutoff:
-            //             break;
-            //         
-            //         case < MutateOutputWeightCutoff:
-            //             break;
-            //         
-            //         case < MutateOutputBiasCutoff:
-            //             break;
-            //         
-            //         case < MutateAddInternalNodeCutoff:
-            //             break;
-            //
-            //         case < MutateDeleteInternalNodeCutoff:
-            //             break;
-            //
-            //         default:
-            //             throw new Exception("Unexpected value in switch statement");
-            //     }
-            // }
+            foreach (var iCandidate in initialCandidateList)
+            {
+                var mutationStrategy = _randomNumberGenerator.Next(0,
+                                                                   100);
+            
+                switch (mutationStrategy)
+                {
+                    case > 0: //MutateInputWeightCutoff:
+                        returnList.Add(MutateInputWeight(iCandidate));
+                        break;
+
+                    case < MutateInternalBiasCutoff:
+                        break;
+                    
+                    // case < MutateOutputWeightCutoff:
+                    //     break;
+                    //
+                    // case < MutateOutputBiasCutoff:
+                    //     break;
+                    //
+                    // case < MutateAddInternalNodeCutoff:
+                    //     break;
+                    //
+                    // case < MutateDeleteInternalNodeCutoff:
+                    //     break;
+            
+                    default:
+                        throw new Exception("Unexpected value in switch statement");
+                }
+            }
 
             return returnList; 
         }
-        
+
+        private Candidate MutateInputWeight(Candidate iCandidate)
+        {
+            var newCandidate = new Candidate(_maxCandidateId++, iCandidate);
+            var inputWeightIndex = _randomNumberGenerator.Next(0,
+                                                               newCandidate.NeuralNetwork.InputWeights
+                                                                   .Count);
+            var oldInputWeight = newCandidate.NeuralNetwork.InputWeights[inputWeightIndex];
+
+            double difference = _randomNumberGenerator.Next(0,
+                                                            3) - 1;
+            difference *= _randomNumberGenerator.NextDouble();
+
+            newCandidate.NeuralNetwork.InputWeights[inputWeightIndex] =
+                new Weight(oldInputWeight.StartNodeIndex,
+                           oldInputWeight.EndNodeIndex,
+                           oldInputWeight.WeightValue + difference);
+            
+            return newCandidate;
+        }
+
         private List<Candidate> CreateCandidatesViaSexualReproduction(List<Candidate> initialCandidateList)
         {
             return new List<Candidate>();

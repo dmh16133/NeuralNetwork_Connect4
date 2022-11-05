@@ -16,7 +16,7 @@ namespace NeuralNetwork_Connect4.Models
         private const int NumberOfOutputNodes = 7;
 
         public List<Node> InputNodes { get; }
-        private List<Weight> _inputWeights;
+        public List<Weight> InputWeights { get; }
         private List<Node> _internalNodes;
         private List<Weight> _outputWeights;
         public  List<Node> OutputNodes { get; }
@@ -25,7 +25,7 @@ namespace NeuralNetwork_Connect4.Models
         {
             _randomNumberGenerator = randomNumberGenerator;
             InputNodes = new List<Node>();
-            _inputWeights = new List<Weight>();
+            InputWeights = new List<Weight>();
             _internalNodes = new List<Node>();
             _outputWeights = new List<Weight>();
             OutputNodes = new List<Node>();
@@ -63,7 +63,7 @@ namespace NeuralNetwork_Connect4.Models
                          iInternalNode < numberOfInternalNodes;
                          iInternalNode++)
                 {
-                    _inputWeights.Add(new Weight(iInputNodeIndex, 
+                    InputWeights.Add(new Weight(iInputNodeIndex, 
                                                  iInternalNode, 
                                                  _randomNumberGenerator.NextDouble()));
                 }
@@ -111,7 +111,7 @@ namespace NeuralNetwork_Connect4.Models
 
         public void Recalculate()
         {
-            foreach (var iInputWeight in _inputWeights)
+            foreach (var iInputWeight in InputWeights)
             {
                 _internalNodes[iInputWeight.EndNodeIndex]
                     .AddWeightedValue(InputNodes[iInputWeight.StartNodeIndex].ActivationValue
